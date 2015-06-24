@@ -66,7 +66,8 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		//Creates the initial grid all with blue rectanges
 		for(int i = 0; i<500; i++){
 			for(int j = 0; j<500; j++){
-				_shapes[i][j] = (new RectangleShape(i, j, 0, 0, 0, 0, _colour));
+				int zValue = (int) (Math.cos(i*j)*(i^2-j^2));
+				_shapes[i][j] = (new RectangleShape(i, j, zValue, 0, 0, 0, 0, _colour));
 			}
 		}
 		//Generates the circles for land and beach
@@ -137,12 +138,18 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 				} else if(Math.hypot(xdistance, ydistance) < radius){
 					if(_shapes[i][j].GetColour() == Color.BLUE){
-
-						_shapes[i][j].SetColour(Color.YELLOW);
+						
+						
+					
 						store[i][j] = 1;
 					}
 
 				} 
+				if(_shapes[i][j].getHeight() > 0){
+					_shapes[i][j].SetColour(Color.GREEN);
+				} else {
+					_shapes[i][j].SetColour(Color.BLUE);
+				}
 			}
 		}
 		
