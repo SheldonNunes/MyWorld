@@ -10,7 +10,7 @@ import java.awt.Color;
 public class RectangleShape extends Shape {
 	
 	private Color colour;
-	private int height1;
+	private long height1;
 	/**
 	 * Default constructor that creates a RectangleShape instance whose instance
 	 * variables are set to default values.
@@ -43,7 +43,7 @@ public class RectangleShape extends Shape {
 	 * @param width width in pixels.
 	 * @param height height in pixels.
 	 */
-	public RectangleShape(int x, int y, int z, int deltaX, int deltaY, int width, int height, Color c) {
+	public RectangleShape(int x, int y, long z, int deltaX, int deltaY, int width, int height, Color c) {
 		super(x,y,deltaX,deltaY,width,height);
 		colour = c;
 		height1 = z;
@@ -63,7 +63,7 @@ public class RectangleShape extends Shape {
 		return(colour);
 	}
 	
-	public int getHeight() {
+	public long getHeight() {
 		return(height1);
 	}
 	

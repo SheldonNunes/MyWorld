@@ -52,7 +52,7 @@ public class AnimationViewer extends JPanel implements ActionListener {
 	}
 	 */
 
-	
+
 
 	/**
 	 * Creates an AnimationViewer instance with a list of Shape objects and 
@@ -64,121 +64,73 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		int randomInt = 0;
 		int numberOfCircles = circle;
 		//Creates the initial grid all with blue rectanges
+		int zMax;
+		int zMean = 0;
 		for(int i = 0; i<500; i++){
 			for(int j = 0; j<500; j++){
-				int zValue = (int) (Math.cos(i*j)*(i^2-j^2));
-				_shapes[i][j] = (new RectangleShape(i, j, zValue, 0, 0, 0, 0, _colour));
+				int x = i-250;
+				int y = j-250;
+				//Max Value = 125000
+				long zValue = (long) (Math.pow(x,2) + Math.pow(y, 2));
+				long landOne = (long) Math.abs(9000*(Math.cos(x*y)));
+						//*(Math.pow(x, 2)-Math.pow(y, 2))));
+				long testValue = (long) (1*landOne);
+				//cos(x*y)*(x^2-y^2)
+				zMean += zValue;
+				_shapes[i][j] = (new RectangleShape(i, j, testValue, 0, 0, 0, 0, _colour));
+
 			}
 		}
+		zMean = zMean/250000;
 		//Generates the circles for land and beach
-		for(int i = 0; i<numberOfCircles; i++){
 			int xPos = randomGenerator.nextInt(500);
 			int yPos = randomGenerator.nextInt(500);
-			GenerateCircles(xPos, yPos);
-		}
+			GenerateCircles(zMean, yPos);
 
-
-
-
-
-		/*
-		for(int i=10; i<490; i++) {
-			for (int j=10; j<490; j++) {
-				randomInt = randomGenerator.nextInt(100);
-				Color c = GetNeighbours(i, j);
-				if(c == test.tellItLikeItIs(TerrainType.SEA)){
-					if(randomInt< 98){
-						_colour = test.tellItLikeItIs(TerrainType.SEA);
-					} else {
-						_colour = test.tellItLikeItIs(TerrainType.BEACH);
-					}
-				} else if((c == test.tellItLikeItIs(TerrainType.BEACH))){
-					if(randomInt< 40){
-						_colour = test.tellItLikeItIs(TerrainType.SEA);
-					} else {
-						_colour = test.tellItLikeItIs(TerrainType.LAND);
-					}
-				} else if((c == test.tellItLikeItIs(TerrainType.LAND))){
-					if(randomInt< 80){
-						_colour = test.tellItLikeItIs(TerrainType.LAND);
-					} else {
-						_colour = test.tellItLikeItIs(TerrainType.MOUNTAIN);
-					}
-				}
-				_shapes[i][j].SetColour(_colour);
-				System.out.println(_colour);
-			}
-		}
-		 */
-
-
-
-		// Start the animation.
-		//_timer.start();
 	}
 	public void GenerateCircles(int posX, int posY) {
 		// Populate the list of Shapes.
-		int xdistance;
-		int ydistance;
 		Random randomGenerator = new Random();
-		int radius = randomGenerator.nextInt(70);
-		radius += 30;
 		int[][] store = new int[500][500];
-		
+
 
 		for(int i=0; i<500; i++) {
 			for (int j=0; j<500; j++) {
-				//int randomizer = randomGenerator.nextInt(4);
-				xdistance = Math.abs(posX-i);
-				ydistance = Math.abs(posY-j);
-				int count = 0;
-				boolean up = true;
-				if(Math.hypot(xdistance, ydistance) < radius-8){
-					_shapes[i][j].SetColour(Color.GREEN);
-
-				} else if(Math.hypot(xdistance, ydistance) < radius){
-					if(_shapes[i][j].GetColour() == Color.BLUE){
-						
-						
-					
-						store[i][j] = 1;
-					}
-
-				} 
-				if(_shapes[i][j].getHeight() > 0){
-					_shapes[i][j].SetColour(Color.GREEN);
-				} else {
+				long height = Math.abs(_shapes[i][j].getHeight());
+				if(_shapes[i][j].getHeight() > posX){
 					_shapes[i][j].SetColour(Color.BLUE);
+				} else {
+					_shapes[i][j].SetColour(Color.YELLOW);
 				}
-			}
-		}
-		
-		int displacementCircles = 0;
-		int displacementradius = randomGenerator.nextInt(50);
-		while(displacementCircles < 10){
-			
-			int xRandomizer = randomGenerator.nextInt(500);
-			int yRandomizer = randomGenerator.nextInt(500);
-			if(store[xRandomizer][yRandomizer] == 1){
-				store[xRandomizer][yRandomizer] = 0;
-				for(int i=0; i<500; i++) {
-					for (int j=0; j<500; j++) {
-						xdistance = Math.abs(xRandomizer-i);
-						ydistance = Math.abs(yRandomizer-j);
-		
-						if(Math.hypot(xdistance, ydistance) < displacementradius-8){
-							_shapes[i][j].SetColour(Color.BLUE);
-						} else if(Math.hypot(xdistance, ydistance) < displacementradius && _shapes[i][j].GetColour() == Color.GREEN){
-							_shapes[i][j].SetColour(Color.YELLOW);
+				/*
+				if(_shapes[i][j].getHeight() > 0){
+					if(height < 50){
+						Color yellow = new Color(height+200, height+200, 0);
+						_shapes[i][j].SetColour(yellow);
+						
+					} else {
+						if(height>100){
+							height = 100;
 						}
-					}
-				}
-				displacementCircles += 1;
-			}
-			
-		}
-		
+						Color green = new Color(0, 255-height, 0);
+						_shapes[i][j].SetColour(green);
+					} 
+					
+					
+				} else {
 
+					if(height > 100){
+						height = 100;
+					}
+					int blueValue = 255-height;
+					Color test = new Color(0, 0, blueValue);
+
+
+					_shapes[i][j].SetColour(test);
+
+				} */
+			}
+		}
 	}
 
 	public Color GetNeighbours(int i, int j){
