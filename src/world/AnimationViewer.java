@@ -58,80 +58,78 @@ public class AnimationViewer extends JPanel implements ActionListener {
 	 * Creates an AnimationViewer instance with a list of Shape objects and 
 	 * starts the animation.
 	 */
+
+	
 	public AnimationViewer(int circle) {
-		_shapes = new RectangleShape[500][500];
+		_shapes = new RectangleShape[513][513];
 		Random randomGenerator = new Random();
 		int randomInt = 0;
 		int numberOfCircles = circle;
-		//Creates the initial grid all with blue rectanges
+		//Creates the initial grid all with blue rectangles
 		int zMax;
 		int zMean = 0;
-		for(int i = 0; i<500; i++){
-			for(int j = 0; j<500; j++){
+		_shapes[0][0] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
+		_shapes[0][512] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
+		_shapes[512][0] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
+		_shapes[512][512] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
+		DiamondSquareAlgorithm(0,0,512,0,0,512,512,512);
+		
+		
+		for(int i = 0; i<512; i++){
+			for(int j = 0; j<512; j++){
+				
 				int x = i-250;
 				int y = j-250;
 				//Max Value = 125000
 				long zValue = (long) (Math.pow(x,2) + Math.pow(y, 2));
 				long landOne = (long) Math.abs(9000*(Math.cos(x*y)));
+				double sinWave = 5*(Math.sin(x/200) * Math.cos(y/50));
+				System.out.println(sinWave);
 						//*(Math.pow(x, 2)-Math.pow(y, 2))));
-				long testValue = (long) (1*landOne);
+				long rollingMountains = (long) Math.abs(Math.cos(x)+Math.cos(y));
+				long testValue = (long) (sinWave);
 				//cos(x*y)*(x^2-y^2)
-				zMean += zValue;
+				zMean += testValue;
 				_shapes[i][j] = (new RectangleShape(i, j, testValue, 0, 0, 0, 0, _colour));
 
 			}
 		}
+		DiamondSquareAlgorithm(0,0,512,0,0,512,512,512);
 		zMean = zMean/250000;
+		System.out.println(zMean);
 		//Generates the circles for land and beach
 			int xPos = randomGenerator.nextInt(500);
 			int yPos = randomGenerator.nextInt(500);
-			GenerateCircles(zMean, yPos);
 
 	}
-	public void GenerateCircles(int posX, int posY) {
+	public void DiamondSquareAlgorithm(int tlX, int tlY, int trX, int trY, int blX, int blY, int brX, int brY){
+		
+		int midLeft = (tlY+blY)/2;
+		
+		int centre = brX/2;
+		int midRight = (centre)/2;
+		if (centre<1) {
+			return;
+		}
+		//Values for height
+		
+		_shapes[centre][centre] = (new RectangleShape(centre, centre, 0, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[tlX][midLeft] = (new RectangleShape(tlX, midLeft, 0, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][midRight] = (new RectangleShape(centre, midRight, 0, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][blY] = (new RectangleShape(centre, blY, 0, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][trY] = (new RectangleShape(centre, trY, 0, 0, 0, 0, 0, Color.ORANGE));
+		
+		//Top Left Square Recursive
+		//DiamondSquareAlgorithm(tlX, tlY, centre, trY, blX, centre, centre, centre);
+		//Top Right Square Recursive
+		int centre2 = brX/2;
+		DiamondSquareAlgorithm(centre2, trY, trX, trY, centre2, centre2, centre2, centre2);
+		//Bottom Left Square Recursive
+		
+	}
 		// Populate the list of Shapes.
 		Random randomGenerator = new Random();
 		int[][] store = new int[500][500];
-
-
-		for(int i=0; i<500; i++) {
-			for (int j=0; j<500; j++) {
-				long height = Math.abs(_shapes[i][j].getHeight());
-				if(_shapes[i][j].getHeight() > posX){
-					_shapes[i][j].SetColour(Color.BLUE);
-				} else {
-					_shapes[i][j].SetColour(Color.YELLOW);
-				}
-				/*
-				if(_shapes[i][j].getHeight() > 0){
-					if(height < 50){
-						Color yellow = new Color(height+200, height+200, 0);
-						_shapes[i][j].SetColour(yellow);
-						
-					} else {
-						if(height>100){
-							height = 100;
-						}
-						Color green = new Color(0, 255-height, 0);
-						_shapes[i][j].SetColour(green);
-					} 
-					
-					
-				} else {
-
-					if(height > 100){
-						height = 100;
-					}
-					int blueValue = 255-height;
-					Color test = new Color(0, 0, blueValue);
-
-
-					_shapes[i][j].SetColour(test);
-
-				} */
-			}
-		}
-	}
 
 	public Color GetNeighbours(int i, int j){
 		Color currentRectColor;
