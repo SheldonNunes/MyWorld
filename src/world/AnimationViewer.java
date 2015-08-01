@@ -38,6 +38,7 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 	// Collection of Shapes to animate.
 	private RectangleShape[][] _shapes;
+	public static long constant = 0;
 
 	//private Timer _timer = new Timer(DELAY, this);
 
@@ -68,64 +69,79 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		//Creates the initial grid all with blue rectangles
 		int zMax;
 		int zMean = 0;
-		_shapes[0][0] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
-		_shapes[0][512] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
-		_shapes[512][0] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
-		_shapes[512][512] = (new RectangleShape(0, 0, randomGenerator.nextInt(10), 0, 0, 0, 0, _colour));
+		//randomGenerator.nextInt(10)
+		_shapes[0][0] = (new RectangleShape(0, 0, 10, 0, 0, 0, 0, _colour));
+		_shapes[0][512] = (new RectangleShape(0, 512, 40, 0, 0, 0, 0, _colour));
+		_shapes[512][0] = (new RectangleShape(512, 0, 20, 0, 0, 0, 0, _colour));
+		_shapes[512][512] = (new RectangleShape(512, 512, 80, 0, 0, 0, 0, _colour));
+		
+		/*
+		for(int i = 0; i<512; i++){
+			for(int j = 0; j<512; j++){
+				_shapes[i][j] = (new RectangleShape(i, j, 0, 0, 0, 0, 0, _colour));
+
+			}
+		}
+		*/
+		
 		DiamondSquareAlgorithm(0,0,512,0,0,512,512,512);
 		
 		
 		for(int i = 0; i<512; i++){
 			for(int j = 0; j<512; j++){
+				long height =  _shapes[i][j].getHeight();
+				System.out.println("Heights");
 				
-				int x = i-250;
-				int y = j-250;
-				//Max Value = 125000
-				long zValue = (long) (Math.pow(x,2) + Math.pow(y, 2));
-				long landOne = (long) Math.abs(9000*(Math.cos(x*y)));
-				double sinWave = 5*(Math.sin(x/200) * Math.cos(y/50));
-				System.out.println(sinWave);
-						//*(Math.pow(x, 2)-Math.pow(y, 2))));
-				long rollingMountains = (long) Math.abs(Math.cos(x)+Math.cos(y));
-				long testValue = (long) (sinWave);
-				//cos(x*y)*(x^2-y^2)
-				zMean += testValue;
-				_shapes[i][j] = (new RectangleShape(i, j, testValue, 0, 0, 0, 0, _colour));
+				//height = maxHeight; //(height/maxHeight)*255;
+				//height = (height/maxHeight)*255;
+				//System.out.println(_shapes[0][128].getHeight());
+				if(_shapes[i][j].getHeight()>10){
+					_shapes[i][j].SetColour(Color.BLUE);
+				}
+				
+				}
+				
 
 			}
-		}
-		DiamondSquareAlgorithm(0,0,512,0,0,512,512,512);
-		zMean = zMean/250000;
-		System.out.println(zMean);
-		//Generates the circles for land and beach
-			int xPos = randomGenerator.nextInt(500);
-			int yPos = randomGenerator.nextInt(500);
 
 	}
+	public int maxHeight = 8;
+	
 	public void DiamondSquareAlgorithm(int tlX, int tlY, int trX, int trY, int blX, int blY, int brX, int brY){
 		
-		int midLeft = (tlY+blY)/2;
+		int centre = (tlX+trX)/2;
+		int vcentre = (tlY+blY)/2;
+		long topLeft = _shapes[tlX][tlY].getHeight();
+		long topRight = _shapes[trX][trY].getHeight();
+		long bottomLeft = _shapes[blX][blY].getHeight();
+		long bottomRight = _shapes[brX][brY].getHeight();
+		int squareSize = (trX-tlX)/512;
+		long middleHeight = (long) (((topLeft+topRight+bottomLeft+bottomRight)/4)*(squareSize*constant));
 		
-		int centre = brX/2;
-		int midRight = (centre)/2;
-		if (centre<1) {
-			return;
+		if(middleHeight > maxHeight){
+			maxHeight = (int) middleHeight;
 		}
-		//Values for height
 		
-		_shapes[centre][centre] = (new RectangleShape(centre, centre, 0, 0, 0, 0, 0, Color.ORANGE));
-		_shapes[tlX][midLeft] = (new RectangleShape(tlX, midLeft, 0, 0, 0, 0, 0, Color.ORANGE));
-		_shapes[centre][midRight] = (new RectangleShape(centre, midRight, 0, 0, 0, 0, 0, Color.ORANGE));
-		_shapes[centre][blY] = (new RectangleShape(centre, blY, 0, 0, 0, 0, 0, Color.ORANGE));
-		_shapes[centre][trY] = (new RectangleShape(centre, trY, 0, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][vcentre] = (new RectangleShape(centre, vcentre, middleHeight, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[tlX][vcentre] = (new RectangleShape(tlX, vcentre, (topLeft+bottomLeft)/2, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[trX][vcentre] = (new RectangleShape(trX, vcentre, (topRight+bottomRight)/2, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][blY] = (new RectangleShape(centre, blY, (bottomLeft+bottomRight)/2, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][trY] = (new RectangleShape(centre, trY, (topLeft+topRight)/2, 0, 0, 0, 0, Color.ORANGE));
 		
-		//Top Left Square Recursive
-		//DiamondSquareAlgorithm(tlX, tlY, centre, trY, blX, centre, centre, centre);
-		//Top Right Square Recursive
-		int centre2 = brX/2;
-		DiamondSquareAlgorithm(centre2, trY, trX, trY, centre2, centre2, centre2, centre2);
-		//Bottom Left Square Recursive
+		if (trX-tlX > 1 ){
+			//Top Left Corner
+			DiamondSquareAlgorithm(tlX, tlY, centre, trY, blX, vcentre, centre, vcentre);
+			//Top Right Corner
+			DiamondSquareAlgorithm(centre, tlY, trX, trY, centre, vcentre, brX, vcentre);
+			//Bottom Left Corner
+			DiamondSquareAlgorithm(tlX, vcentre, centre, vcentre, blX, blY, centre, brY);
+			//Bottom Right Corner
+			DiamondSquareAlgorithm(centre, vcentre, trX, vcentre, centre, blY, brX, brY);
+		}
 		
+		
+		
+
 	}
 		// Populate the list of Shapes.
 		Random randomGenerator = new Random();
@@ -186,8 +202,8 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 		// Progress the animation.
 		Shape s;
-		for(int i = 0; i<500; i++){
-			for(int j = 0; j<500; j++){
+		for(int i = 0; i<512; i++){
+			for(int j = 0; j<512; j++){
 				s = _shapes[i][j];
 				s.thePaint(painter);
 			}
@@ -216,14 +232,15 @@ public class AnimationViewer extends JPanel implements ActionListener {
 	 * Main program method to create an AnimationViewer object and display this
 	 * within a JFrame window.
 	 */
+
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
-		System.out.println("Enter Number of Circles");
-		int circles = in.nextInt();
+		System.out.println("Enter Constant (Higher values create more mountains and valleys)");
+		constant = in.nextInt();
 		JFrame frame = new JFrame("Animation viewer");
-		frame.add(new AnimationViewer(circles));
+		frame.add(new AnimationViewer(1));
 		// Set window properties.
-		frame.setSize(500, 550);
+		frame.setSize(550, 550);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
