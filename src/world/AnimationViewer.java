@@ -38,7 +38,7 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 	// Collection of Shapes to animate.
 	private RectangleShape[][] _shapes;
-	public static long constant = 0;
+	public static long constant = 10;
 
 	//private Timer _timer = new Timer(DELAY, this);
 
@@ -90,12 +90,15 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		for(int i = 0; i<512; i++){
 			for(int j = 0; j<512; j++){
 				long height =  _shapes[i][j].getHeight();
-				System.out.println("Heights");
 				
 				//height = maxHeight; //(height/maxHeight)*255;
 				//height = (height/maxHeight)*255;
 				//System.out.println(_shapes[0][128].getHeight());
-				if(_shapes[i][j].getHeight()>10){
+				if(_shapes[i][j].getHeight()>30){
+					_shapes[i][j].SetColour(Color.GREEN);
+				} else if(_shapes[i][j].getHeight()>20){
+					_shapes[i][j].SetColour(Color.YELLOW);
+				} else {
 					_shapes[i][j].SetColour(Color.BLUE);
 				}
 				
@@ -116,12 +119,13 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		long bottomLeft = _shapes[blX][blY].getHeight();
 		long bottomRight = _shapes[brX][brY].getHeight();
 		int squareSize = (trX-tlX)/512;
-		long middleHeight = (long) (((topLeft+topRight+bottomLeft+bottomRight)/4)*(squareSize*constant));
+		long middleHeight = (long) (((topLeft+topRight+bottomLeft+bottomRight)/4));//*(squareSize*constant));
 		
 		if(middleHeight > maxHeight){
 			maxHeight = (int) middleHeight;
 		}
-		
+		System.out.println("topLeft: " + topLeft + " topRight: " + topRight + " bottomLeft: " + bottomLeft + " bottomRight: " + bottomRight);
+		System.out.println(middleHeight);
 		_shapes[centre][vcentre] = (new RectangleShape(centre, vcentre, middleHeight, 0, 0, 0, 0, Color.ORANGE));
 		_shapes[tlX][vcentre] = (new RectangleShape(tlX, vcentre, (topLeft+bottomLeft)/2, 0, 0, 0, 0, Color.ORANGE));
 		_shapes[trX][vcentre] = (new RectangleShape(trX, vcentre, (topRight+bottomRight)/2, 0, 0, 0, 0, Color.ORANGE));
