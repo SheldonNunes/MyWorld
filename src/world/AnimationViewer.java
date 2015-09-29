@@ -108,9 +108,9 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		}
 		middleHeight = (long) (middleHeight + error);
 
-		System.out.println("topLeft: " + topLeft + " topRight: " + topRight + " bottomLeft: " + bottomLeft + " bottomRight: " + bottomRight);
-		System.out.println(middleHeight);
-		System.out.println("Square Size: " + squareSize + " trX-tlX = " + (trX-tlX));
+		//System.out.println("topLeft: " + topLeft + " topRight: " + topRight + " bottomLeft: " + bottomLeft + " bottomRight: " + bottomRight);
+		//System.out.println(middleHeight);
+		//System.out.println("Square Size: " + squareSize + " trX-tlX = " + (trX-tlX));
 		_shapes[centre][vcentre] = (new RectangleShape(centre, vcentre, middleHeight, 0, 0, 0, 0, Color.ORANGE));
 		_shapes[tlX][vcentre] = (new RectangleShape(tlX, vcentre, (topLeft+bottomLeft)/2, 0, 0, 0, 0, Color.ORANGE));
 		_shapes[trX][vcentre] = (new RectangleShape(trX, vcentre, (topRight+bottomRight)/2, 0, 0, 0, 0, Color.ORANGE));
