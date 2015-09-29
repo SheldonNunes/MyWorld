@@ -38,7 +38,7 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 	// Collection of Shapes to animate.
 	private RectangleShape[][] _shapes;
-	public static long constant = 3;
+	public static long constant = 12;
 
 	//private Timer _timer = new Timer(DELAY, this);
 
@@ -103,6 +103,9 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 		long middleHeight = (long) (((topLeft+topRight+bottomLeft+bottomRight)/4));
 		long error = (long) (constant*((Math.random()*20+1)/2)*squareSize);
+		if(Math.random() < 0.5){
+			error = -error;
+		}
 		middleHeight = (long) (middleHeight + error);
 
 		System.out.println("topLeft: " + topLeft + " topRight: " + topRight + " bottomLeft: " + bottomLeft + " bottomRight: " + bottomRight);
