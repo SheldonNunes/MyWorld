@@ -28,7 +28,7 @@ import java.util.Scanner;
  * In response to receiving an event from the Timer, the AnimationViewer iterates 
  * through a list of Shapes requesting that each Shape paints and moves itself.
  * 
- * @author Ian Warren. Added to and edited by Mathew Smith and Sheldon Nunes
+ * @author Sheldon Nunes. Added to and edited by Mathew Smith.
  */
 @SuppressWarnings("serial")
 public class AnimationViewer extends JPanel implements ActionListener {
@@ -38,7 +38,7 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 	// Collection of Shapes to animate.
 	private RectangleShape[][] _shapes;
-	public static long constant = 10;
+	public static long constant = 3;
 
 	//private Timer _timer = new Timer(DELAY, this);
 
@@ -61,54 +61,35 @@ public class AnimationViewer extends JPanel implements ActionListener {
 	 */
 
 	
-	public AnimationViewer(int circle) {
+	public AnimationViewer(String[] valueArray) {
 		_shapes = new RectangleShape[513][513];
-		Random randomGenerator = new Random();
-		int randomInt = 0;
-		int numberOfCircles = circle;
 		//Creates the initial grid all with blue rectangles
-		int zMax;
-		int zMean = 0;
-		//randomGenerator.nextInt(10)
-		_shapes[0][0] = (new RectangleShape(0, 0, 10, 0, 0, 0, 0, _colour));
-		_shapes[0][512] = (new RectangleShape(0, 512, 40, 0, 0, 0, 0, _colour));
-		_shapes[512][0] = (new RectangleShape(512, 0, 20, 0, 0, 0, 0, _colour));
-		_shapes[512][512] = (new RectangleShape(512, 512, 80, 0, 0, 0, 0, _colour));
-		
-		/*
-		for(int i = 0; i<512; i++){
-			for(int j = 0; j<512; j++){
-				_shapes[i][j] = (new RectangleShape(i, j, 0, 0, 0, 0, 0, _colour));
-
-			}
-		}
-		*/
+		_shapes[0][0] = (new RectangleShape(0, 0, Integer.parseInt(valueArray[0]), 0, 0, 0, 0, _colour));
+		_shapes[0][512] = (new RectangleShape(0, 512, Integer.parseInt(valueArray[2]), 0, 0, 0, 0, _colour));
+		_shapes[512][0] = (new RectangleShape(512, 0, 20, Integer.parseInt(valueArray[1]), 0, 0, 0, _colour));
+		_shapes[512][512] = (new RectangleShape(512, 512, Integer.parseInt(valueArray[3]), 0, 0, 0, 0, _colour));
 		
 		DiamondSquareAlgorithm(0,0,512,0,0,512,512,512);
 		
-		
+		SetNewColours();
+
+
+	}
+	
+	public void SetNewColours(){
 		for(int i = 0; i<512; i++){
 			for(int j = 0; j<512; j++){
-				long height =  _shapes[i][j].getHeight();
-				
-				//height = maxHeight; //(height/maxHeight)*255;
-				//height = (height/maxHeight)*255;
-				//System.out.println(_shapes[0][128].getHeight());
-				if(_shapes[i][j].getHeight()>30){
+				if(_shapes[i][j].getHeight()>300){
 					_shapes[i][j].SetColour(Color.GREEN);
-				} else if(_shapes[i][j].getHeight()>20){
+				} else if(_shapes[i][j].getHeight()>250){
 					_shapes[i][j].SetColour(Color.YELLOW);
 				} else {
 					_shapes[i][j].SetColour(Color.BLUE);
 				}
 				
 				}
-				
-
 			}
-
 	}
-	public int maxHeight = 8;
 	
 	public void DiamondSquareAlgorithm(int tlX, int tlY, int trX, int trY, int blX, int blY, int brX, int brY){
 		
@@ -118,14 +99,15 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		long topRight = _shapes[trX][trY].getHeight();
 		long bottomLeft = _shapes[blX][blY].getHeight();
 		long bottomRight = _shapes[brX][brY].getHeight();
-		int squareSize = (trX-tlX)/512;
-		long middleHeight = (long) (((topLeft+topRight+bottomLeft+bottomRight)/4));//*(squareSize*constant));
-		
-		if(middleHeight > maxHeight){
-			maxHeight = (int) middleHeight;
-		}
+		double squareSize = (((trX-tlX)/512d+.5));
+
+		long middleHeight = (long) (((topLeft+topRight+bottomLeft+bottomRight)/4));
+		long error = (long) (constant*((Math.random()*20+1)/2)*squareSize);
+		middleHeight = (long) (middleHeight + error);
+
 		System.out.println("topLeft: " + topLeft + " topRight: " + topRight + " bottomLeft: " + bottomLeft + " bottomRight: " + bottomRight);
 		System.out.println(middleHeight);
+		System.out.println("Square Size: " + squareSize + " trX-tlX = " + (trX-tlX));
 		_shapes[centre][vcentre] = (new RectangleShape(centre, vcentre, middleHeight, 0, 0, 0, 0, Color.ORANGE));
 		_shapes[tlX][vcentre] = (new RectangleShape(tlX, vcentre, (topLeft+bottomLeft)/2, 0, 0, 0, 0, Color.ORANGE));
 		_shapes[trX][vcentre] = (new RectangleShape(trX, vcentre, (topRight+bottomRight)/2, 0, 0, 0, 0, Color.ORANGE));
@@ -147,9 +129,6 @@ public class AnimationViewer extends JPanel implements ActionListener {
 		
 
 	}
-		// Populate the list of Shapes.
-		Random randomGenerator = new Random();
-		int[][] store = new int[500][500];
 
 	public Color GetNeighbours(int i, int j){
 		Color currentRectColor;
@@ -239,10 +218,16 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
-		System.out.println("Enter Constant (Higher values create more mountains and valleys)");
-		constant = in.nextInt();
+		//System.out.println("Enter Constant (Higher values create more mountains and valleys)");
+		//constant = in.nextInt();
+		//Get the values entered by user and pass into AnimationViewer function
+		System.out.println("Please enter a set of 4 numbers seperated by commas representing the outer corners of the square.\n Values should be in range 280-350 for good results. e.g. 280,280,280,280");
+		String values = in.nextLine();
+		String[] valueArray = values.split(",");
 		JFrame frame = new JFrame("Animation viewer");
-		frame.add(new AnimationViewer(1));
+		frame.add(new AnimationViewer(valueArray));
+		
+		
 		// Set window properties.
 		frame.setSize(550, 550);
 		frame.setVisible(true);
