@@ -28,7 +28,7 @@ import java.util.Scanner;
  * In response to receiving an event from the Timer, the AnimationViewer iterates 
  * through a list of Shapes requesting that each Shape paints and moves itself.
  * 
- * @author Ian Warren. Added to and edited by Mathew Smith and Sheldon Nunes
+ * @author Sheldon Nunes. Added to and edited by Mathew Smith.
  */
 @SuppressWarnings("serial")
 public class AnimationViewer extends JPanel implements ActionListener {
@@ -38,6 +38,7 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 	// Collection of Shapes to animate.
 	private RectangleShape[][] _shapes;
+	public static long constant = 12;
 
 	//private Timer _timer = new Timer(DELAY, this);
 
@@ -52,124 +53,82 @@ public class AnimationViewer extends JPanel implements ActionListener {
 	}
 	 */
 
-	
+
 
 	/**
 	 * Creates an AnimationViewer instance with a list of Shape objects and 
 	 * starts the animation.
 	 */
-	public AnimationViewer(int circle) {
-		_shapes = new RectangleShape[500][500];
-		Random randomGenerator = new Random();
-		int randomInt = 0;
-		int numberOfCircles = circle;
-		//Creates the initial grid all with blue rectanges
-		for(int i = 0; i<500; i++){
-			for(int j = 0; j<500; j++){
-				_shapes[i][j] = (new RectangleShape(i, j, 0, 0, 0, 0, _colour));
-			}
-		}
-		//Generates the circles for land and beach
-		for(int i = 0; i<numberOfCircles; i++){
-			int xPos = randomGenerator.nextInt(500);
-			int yPos = randomGenerator.nextInt(500);
-			GenerateCircles(xPos, yPos);
-		}
+
+	
+	public AnimationViewer(String[] valueArray) {
+		_shapes = new RectangleShape[513][513];
+		//Creates the initial grid all with blue rectangles
+		_shapes[0][0] = (new RectangleShape(0, 0, Integer.parseInt(valueArray[0]), 0, 0, 0, 0, _colour));
+		_shapes[0][512] = (new RectangleShape(0, 512, Integer.parseInt(valueArray[2]), 0, 0, 0, 0, _colour));
+		_shapes[512][0] = (new RectangleShape(512, 0, 20, Integer.parseInt(valueArray[1]), 0, 0, 0, _colour));
+		_shapes[512][512] = (new RectangleShape(512, 512, Integer.parseInt(valueArray[3]), 0, 0, 0, 0, _colour));
+		
+		DiamondSquareAlgorithm(0,0,512,0,0,512,512,512);
+		
+		SetNewColours();
 
 
-
-
-
-		/*
-		for(int i=10; i<490; i++) {
-			for (int j=10; j<490; j++) {
-				randomInt = randomGenerator.nextInt(100);
-				Color c = GetNeighbours(i, j);
-				if(c == test.tellItLikeItIs(TerrainType.SEA)){
-					if(randomInt< 98){
-						_colour = test.tellItLikeItIs(TerrainType.SEA);
-					} else {
-						_colour = test.tellItLikeItIs(TerrainType.BEACH);
-					}
-				} else if((c == test.tellItLikeItIs(TerrainType.BEACH))){
-					if(randomInt< 40){
-						_colour = test.tellItLikeItIs(TerrainType.SEA);
-					} else {
-						_colour = test.tellItLikeItIs(TerrainType.LAND);
-					}
-				} else if((c == test.tellItLikeItIs(TerrainType.LAND))){
-					if(randomInt< 80){
-						_colour = test.tellItLikeItIs(TerrainType.LAND);
-					} else {
-						_colour = test.tellItLikeItIs(TerrainType.MOUNTAIN);
-					}
-				}
-				_shapes[i][j].SetColour(_colour);
-				System.out.println(_colour);
-			}
-		}
-		 */
-
-
-
-		// Start the animation.
-		//_timer.start();
 	}
-	public void GenerateCircles(int posX, int posY) {
-		// Populate the list of Shapes.
-		int xdistance;
-		int ydistance;
-		Random randomGenerator = new Random();
-		int radius = randomGenerator.nextInt(70);
-		radius += 30;
-		int[][] store = new int[500][500];
-		
-
-		for(int i=0; i<500; i++) {
-			for (int j=0; j<500; j++) {
-				//int randomizer = randomGenerator.nextInt(4);
-				xdistance = Math.abs(posX-i);
-				ydistance = Math.abs(posY-j);
-				int count = 0;
-				boolean up = true;
-				if(Math.hypot(xdistance, ydistance) < radius-8){
+	
+	public void SetNewColours(){
+		for(int i = 0; i<512; i++){
+			for(int j = 0; j<512; j++){
+				if(_shapes[i][j].getHeight()>300){
 					_shapes[i][j].SetColour(Color.GREEN);
-
-				} else if(Math.hypot(xdistance, ydistance) < radius){
-					if(_shapes[i][j].GetColour() == Color.BLUE){
-
-						_shapes[i][j].SetColour(Color.YELLOW);
-						store[i][j] = 1;
-					}
-
-				} 
-			}
-		}
-		
-		int displacementCircles = 0;
-		int displacementradius = randomGenerator.nextInt(50);
-		while(displacementCircles < 10){
-			
-			int xRandomizer = randomGenerator.nextInt(500);
-			int yRandomizer = randomGenerator.nextInt(500);
-			if(store[xRandomizer][yRandomizer] == 1){
-				store[xRandomizer][yRandomizer] = 0;
-				for(int i=0; i<500; i++) {
-					for (int j=0; j<500; j++) {
-						xdistance = Math.abs(xRandomizer-i);
-						ydistance = Math.abs(yRandomizer-j);
-		
-						if(Math.hypot(xdistance, ydistance) < displacementradius-8){
-							_shapes[i][j].SetColour(Color.BLUE);
-						} else if(Math.hypot(xdistance, ydistance) < displacementradius && _shapes[i][j].GetColour() == Color.GREEN){
-							_shapes[i][j].SetColour(Color.YELLOW);
-						}
-					}
+				} else if(_shapes[i][j].getHeight()>250){
+					_shapes[i][j].SetColour(Color.YELLOW);
+				} else {
+					_shapes[i][j].SetColour(Color.BLUE);
 				}
-				displacementCircles += 1;
+				
+				}
 			}
-			
+	}
+	
+	public void DiamondSquareAlgorithm(int tlX, int tlY, int trX, int trY, int blX, int blY, int brX, int brY){
+		
+		int centre = (tlX+trX)/2;
+		int vcentre = (tlY+blY)/2;
+		long topLeft = _shapes[tlX][tlY].getHeight();
+		long topRight = _shapes[trX][trY].getHeight();
+		long bottomLeft = _shapes[blX][blY].getHeight();
+		long bottomRight = _shapes[brX][brY].getHeight();
+		double squareSize = (((trX-tlX)/512d+.5));
+
+		long middleHeight = (long) (((topLeft+topRight+bottomLeft+bottomRight)/4));
+		long error = (long) (constant*((Math.random()*20+1)/2)*squareSize);
+		if(Math.random() < 0.5){
+			error = -error;
 		}
+		middleHeight = (long) (middleHeight + error);
+
+		//System.out.println("topLeft: " + topLeft + " topRight: " + topRight + " bottomLeft: " + bottomLeft + " bottomRight: " + bottomRight);
+		//System.out.println(middleHeight);
+		//System.out.println("Square Size: " + squareSize + " trX-tlX = " + (trX-tlX));
+		_shapes[centre][vcentre] = (new RectangleShape(centre, vcentre, middleHeight, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[tlX][vcentre] = (new RectangleShape(tlX, vcentre, (topLeft+bottomLeft)/2, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[trX][vcentre] = (new RectangleShape(trX, vcentre, (topRight+bottomRight)/2, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][blY] = (new RectangleShape(centre, blY, (bottomLeft+bottomRight)/2, 0, 0, 0, 0, Color.ORANGE));
+		_shapes[centre][trY] = (new RectangleShape(centre, trY, (topLeft+topRight)/2, 0, 0, 0, 0, Color.ORANGE));
+		
+		if (trX-tlX > 1 ){
+			//Top Left Corner
+			DiamondSquareAlgorithm(tlX, tlY, centre, trY, blX, vcentre, centre, vcentre);
+			//Top Right Corner
+			DiamondSquareAlgorithm(centre, tlY, trX, trY, centre, vcentre, brX, vcentre);
+			//Bottom Left Corner
+			DiamondSquareAlgorithm(tlX, vcentre, centre, vcentre, blX, blY, centre, brY);
+			//Bottom Right Corner
+			DiamondSquareAlgorithm(centre, vcentre, trX, vcentre, centre, blY, brX, brY);
+		}
+		
+		
 		
 
 	}
@@ -229,8 +188,8 @@ public class AnimationViewer extends JPanel implements ActionListener {
 
 		// Progress the animation.
 		Shape s;
-		for(int i = 0; i<500; i++){
-			for(int j = 0; j<500; j++){
+		for(int i = 0; i<512; i++){
+			for(int j = 0; j<512; j++){
 				s = _shapes[i][j];
 				s.thePaint(painter);
 			}
@@ -259,14 +218,21 @@ public class AnimationViewer extends JPanel implements ActionListener {
 	 * Main program method to create an AnimationViewer object and display this
 	 * within a JFrame window.
 	 */
+
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
-		System.out.println("Enter Number of Circles");
-		int circles = in.nextInt();
+		//System.out.println("Enter Constant (Higher values create more mountains and valleys)");
+		//constant = in.nextInt();
+		//Get the values entered by user and pass into AnimationViewer function
+		System.out.println("Please enter a set of 4 numbers seperated by commas representing the outer corners of the square.\n Values should be in range 280-350 for good results. e.g. 280,280,280,280");
+		String values = in.nextLine();
+		String[] valueArray = values.split(",");
 		JFrame frame = new JFrame("Animation viewer");
-		frame.add(new AnimationViewer(circles));
+		frame.add(new AnimationViewer(valueArray));
+		
+		
 		// Set window properties.
-		frame.setSize(500, 550);
+		frame.setSize(550, 550);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
